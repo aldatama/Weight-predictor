@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Days to goal weight</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f6f7;--card:#fff;--ink:#12242b;--mute:#566a72;--line:#d3dee2;--acc:#0b7f70;--accbg:#d9f1ec;--warn:#8a5200;--warnbg:#fff1d6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e191e;--card:#162429;--ink:#e6f0f2;--mute:#93a9b0;--line:#2a3d44;--acc:#3fd1bb;--accbg:#12403a;--warn:#f2b45a;--warnbg:#3a2a0f}}
+:root[data-theme="dark"]{--bg:#0e191e;--card:#162429;--ink:#e6f0f2;--mute:#93a9b0;--line:#2a3d44;--acc:#3fd1bb;--accbg:#12403a;--warn:#f2b45a;--warnbg:#3a2a0f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Sora,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:940px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:clamp(24px,5vw,34px);line-height:1.15;margin:8px 0 4px;font-weight:800}
+.sub{color:var(--mute);margin:0 0 20px}
+.g{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:820px){.g{grid-template-columns:350px minmax(0,1fr);align-items:start}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.f{margin-bottom:14px}
+.f:last-child{margin-bottom:0}
+.f>span{display:block;font-size:14px;color:var(--mute);margin-bottom:6px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input[type=number],select{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px}
+input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{flex:1;text-align:center;padding:10px 6px;cursor:pointer;font-size:15px}
+.seg input:checked+label{background:var(--acc);color:var(--bg);font-weight:600}
+.seg input:focus-visible+label{outline:2px solid var(--ink);outline-offset:-3px}
+.hint{font-size:13px;color:var(--mute);margin:6px 0 0}
+.big{font-size:clamp(68px,17vw,120px);font-weight:800;line-height:1;color:var(--acc);margin:0;letter-spacing:-.03em}
+.lab{font-size:18px;margin:4px 0 0}
+.when{color:var(--mute);margin:2px 0 18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:20px}
+.stat small{color:var(--mute);font-size:13px}
+h2{font-size:16px;margin:0 0 8px}
+.ms{display:grid;grid-template-columns:70px 1fr auto;gap:4px 10px;font-size:15px;padding:8px 0;border-top:1px solid var(--line)}
+.ms i{font-style:normal;color:var(--mute)}
+.bar{height:8px;border-radius:4px;background:var(--accbg);margin:10px 0 4px;position:relative}
+.bar span{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--acc);width:100%}
+.note{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:14px}
+.foot{font-size:12.5px;color:var(--mute);margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>How many days to your goal weight?</h1>
+  <p class="sub">Enter your details and pick a difficulty. The count updates as you type.</p>
+  <div class="g">
+    <section class="card" aria-label="Your details">
+      <div class="f"><span>Gender</span>
+        <div class="seg" role="radiogroup" aria-label="Gender">
+          <input type="radio" name="sex" id="sx-m" value="m" checked><label for="sx-m">Male</label>
+          <input type="radio" name="sex" id="sx-f" value="f"><label for="sx-f">Female</label>
+        </div>
+      </div>
+      <div class="row f">
+        <label><span>Age (years)</span><input type="number" id="age" value="30" min="18" max="90" inputmode="numeric"></label>
+        <label><span>Height (cm)</span><input type="number" id="h" value="170" min="120" max="230" inputmode="numeric"></label>
+      </div>
+      <div class="row f">
+        <label><span>Current weight (kg)</span><input type="number" id="w" value="80" min="30" max="300" step="0.1" inputmode="decimal"></label>
+        <label><span>Target weight (kg)</span><input type="number" id="t" value="70" min="30" max="300" step="0.1" inputmode="decimal"></label>
+      </div>
+      <label class="f" style="display:block"><span>Activity level</span>
+        <select id="act">
+          <option value="1.2">Mostly sitting, little exercise</option>
+          <option value="1.375" selected>Light: exercise 1–3 days a week</option>
+          <option value="1.55">Moderate: exercise 3–5 days a week</option>
+          <option value="1.725">Heavy: hard exercise or physical job</option>
+        </select>
+      </label>
+      <div class="f"><span>Difficulty</span>
+        <div class="seg" role="radiogroup" aria-label="Difficulty">
+          <input type="radio" name="diff" id="d-easy" value="easy"><label for="d-easy">Easy</label>
+          <input type="radio" name="diff" id="d-medium" value="medium" checked><label for="d-medium">Medium</label>
+          <input type="radio" name="diff" id="d-hard" value="hard"><label for="d-hard">Hard</label>
+        </div>
+        <p class="hint" id="dh"></p>
+      </div>
+    </section>
+
+    <section class="card" id="out" aria-live="polite"></section>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var DEF={easy:300,medium:550,hard:800};
+  var HINT={easy:'Small calorie cut, about 0.25 kg per week. Easiest to stick to.',medium:'Moderate cut, about 0.5 kg per week. A common, steady pace.',hard:'Large cut, about 0.75 kg per week. Fastest, but demanding.'};
+  var KEYS=['age','h','w','t','act'];
+
+  function read(){
+    return {
+      sex:document.querySelector('input[name=sex]:checked').value,
+      diff:document.querySelector('input[name=diff]:checked').value,
+      age:+$('age').value,h:+$('h').value,w:+$('w').value,t:+$('t').value,act:+$('act').value
+    };
+  }
+  function save(s){try{localStorage.setItem('wl-days',JSON.stringify(s))}catch(e){}}
+  function load(){
+    try{
+      var s=JSON.parse(localStorage.getItem('wl-days')||'null');
+      if(!s)return;
+      KEYS.forEach(function(k){if(s[k]!=null)$(k).value=s[k]});
+      var a=$('sx-'+s.sex);if(a)a.checked=true;
+      var b=$('d-'+s.diff);if(b)b.checked=true;
+    }catch(e){}
+  }
+
+  function sim(s){
+    var d=DEF[s.diff],floor=s.sex==='m'?1500:1200,w=s.w,day=0,total=s.w-s.t,first=null;
+    var fr=[.25,.5,.75,1],ms=[],mi=0;
+    while(w>s.t&&day<4000){
+      var bmr=10*w+6.25*s.h-5*s.age+(s.sex==='m'?5:-161);
+      var tdee=bmr*s.act,intake=Math.max(tdee-d,floor),def=tdee-intake;
+      if(def<80)return {stall:true};
+      if(!first)first={tdee:tdee,intake:intake,def:def};
+      w-=def/7700;day++;
+      while(mi<4&&(s.w-w)/total>=fr[mi]-1e-9){ms.push({f:fr[mi],day:day});mi++}
+    }
+    if(w>s.t)return {stall:true};
+    if(mi<4)ms.push({f:1,day:day});
+    return {days:day,first:first,ms:ms};
+  }
+
+  function dt(n){return new Date(Date.now()+n*864e5).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+  function fmt(n,p){return n.toLocaleString('en-US',{maximumFractionDigits:p||0})}
+
+  function calc(){
+    var s=read(),out=$('out');
+    $('dh').textContent=HINT[s.diff];
+    save(s);
+    if(![s.age,s.h,s.w,s.t].every(function(x){return x>0})){out.innerHTML='<p>Fill in every field to see your result.</p>';return}
+    if(s.age<18){out.innerHTML='<p class="note">This calculator is for adults (18 and over). For a child or teenager, please ask a doctor.</p>';return}
+    if(s.t>=s.w){out.innerHTML='<h2>Target must be lower than current weight</h2><p class="when">Enter a target weight below '+fmt(s.w,1)+' kg to count the days.</p>';return}
+    var bmiT=s.t/Math.pow(s.h/100,2),notes='';
+    if(bmiT<18.5)notes+='<p class="note">A target of '+fmt(s.t,1)+' kg gives a BMI of '+fmt(bmiT,1)+', which is underweight. Consider a higher target.</p>';
+    var r=sim(s);
+    if(r.stall){out.innerHTML=notes+'<h2>This target can’t be reached safely on this plan</h2><p class="when">At your size and activity level the daily calorie floor leaves almost no deficit. Try a higher target weight or a higher activity level.</p>';return}
+    var total=s.w-s.t,wk=total/r.days*7;
+    if(wk>=s.w*0.01)notes+='<p class="note">This pace is about '+fmt(wk,2)+' kg a week, 1% of your body weight or more. That is faster than usually recommended.</p>';
+    var span=r.days<70?'about '+fmt(r.days/7,1)+' weeks':'about '+fmt(r.days/30.44,1)+' months';
+    var h=notes+
+      '<p class="big">'+fmt(r.days)+'</p>'+
+      '<p class="lab">days to reach '+fmt(s.t,1)+' kg</p>'+
+      '<p class="when">'+span+', around '+dt(r.days)+'</p>'+
+      '<div class="stats">'+
+      '<div class="stat"><b>'+fmt(Math.round(r.first.intake/10)*10)+' kcal</b><small>daily eating target at the start</small></div>'+
+      '<div class="stat"><b>'+fmt(wk,2)+' kg</b><small>average loss per week</small></div>'+
+      '<div class="stat"><b>'+fmt(total,1)+' kg</b><small>total to lose</small></div></div>'+
+      '<h2>Milestones</h2>';
+    r.ms.forEach(function(m){
+      h+='<div class="ms"><b>Day '+fmt(m.day)+'</b><span>'+fmt(s.w-total*m.f,1)+' kg ('+Math.round(m.f*100)+'% done)</span><i>'+dt(m.day)+'</i></div>';
+    });
+    h+='<p class="foot">This is an estimate. It uses the Mifflin-St Jeor formula for energy use, 7,700 kcal per kg of body weight, and recalculates as your weight drops. Daily intake never goes below 1,500 kcal (male) or 1,200 kcal (female). Real results vary, and this is not medical advice. Talk to a doctor before a large change in diet.</p>';
+    out.innerHTML=h;
+  }
+
+  load();
+  document.addEventListener('input',calc);
+  document.addEventListener('change',calc);
+  calc();
+})();
+</script>
+</body>
+</html>
